@@ -37,9 +37,17 @@ public class NewIOClient
             fileInputStream = new FileInputStream(FILE);
             inputChannel = fileInputStream.getChannel();
             long size = inputChannel.size();
+            //window下最大传输8M，将文件分割8M一份
             long split = 1024 * 1024 * 8;
             long c = size / split;
-            //window下最大传输8M，将文件分割8M一份
+
+            //可通过position来处理
+            /*while (inputChannel.position() < size) {
+                count = inputChannel.transferTo(inputChannel.position(), split, socketChannel);
+                inputChannel.position(inputChannel.position() + split);
+                sum += count;
+            }*/
+
             for (int i = 0; i <= c; i++) {
                 count = inputChannel.transferTo(split * i, split, socketChannel);
                 sum += count;
