@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hello websocket</title>
+</head>
+<body>
+
+
+<script>
+    var socket;
+    //判断浏览器是否支持websocket
+    if (window.WebSocket) {
+        socket = new WebSocket("ws://localhost:7103/hello");
+        //onmessage 相当于channelRead0
+        //data 服务端回复的消息
+        socket.onmessage = function (data) {
+            var responseText = document.getElementById("responseText");
+            console.log(data)
+            responseText.value = responseText.value + "\n" + data.data;
+        }
+        //相当于handlerAdded
+        socket.onopen = function (data) {
+            var responseText = document.getElementById("responseText");
+            responseText.value = "连接开启了。。。"
+        }
+
+        socket.onclose = function (data) {
+            var responseText = document.getElementById("responseText");
+            responseText.value = responseText.value + "\n连接关闭了。。。"
+        }
+    } else {
+        alert("当前浏览器不支持websocket")
+    }
+
+    function send(msg) {
+        if (!window.socket) {
+            return;
+        }
+
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.send(msg);
+            //清空聊天框
+            document.getElementById("requestText").value = '';
+        } else {
+            alert("连接未开启。。。")
+        }
+    }
+
+</script>
+
+
+<form onsubmit="return false">
+    <div style="text-align: center">
+        <textarea name="message" id="requestText" style="height: 300px; width: 500px"></textarea>
+        <input type="button" value="发消息" onclick="send(this.form.message.value)">
+    </div>
+    <div style="text-align: center">
+        <textarea id="responseText" style="height: 300px; width: 500px"></textarea>
+        <input type="button" value="清空内容" onclick="document.getElementById('responseText').value=''">
+    </div>
+</form>
+
+</body>
+</html>
