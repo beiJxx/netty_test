@@ -10,8 +10,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -36,19 +34,15 @@ public class RpcNettyClient
 
     public Object getBean(final Class<?> serviceClass, final String providerName) {
         return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-                new Class<?>[] {serviceClass}, new InvocationHandler()
-                {
-                    @Override
-                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                        System.out.println("(proxy,method,args) 进入..." + (++count) + "次");
-                        if (null == clientHandler) {
-                            initClient();
-                        }
-
-                        clientHandler.setParam(providerName + args[0]);
-
-                        return POOL.submit(clientHandler).get();
+                new Class<?>[] {serviceClass}, (proxy, method, args) -> {
+                    System.out.println("(proxy,method,args) 进入..." + (++count) + "次");
+                    if (null == clientHandler) {
+                        initClient();
                     }
+
+                    clientHandler.setParam(providerName + args[0]);
+
+                    return POOL.submit(clientHandler).get();
                 });
     }
 
