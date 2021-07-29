@@ -39,6 +39,7 @@ public class RpcNettyClient
                     if (null == clientHandler) {
                         initClient();
                     }
+                    //                    Thread.sleep(1000);
 
                     clientHandler.setParam(providerName + args[0]);
 
@@ -60,6 +61,10 @@ public class RpcNettyClient
                         ch.pipeline()
                                 .addLast(new StringDecoder())
                                 .addLast(new StringEncoder())
+                                .addLast(new InHandler1())
+                                .addLast(new InHandler2())
+                                .addLast(new OutHandler1())
+                                //                                .addFirst(new InHandler3())
                                 .addLast(clientHandler);
                     }
                 });

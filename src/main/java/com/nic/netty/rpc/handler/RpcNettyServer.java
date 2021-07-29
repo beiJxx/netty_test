@@ -37,6 +37,9 @@ public class RpcNettyServer
                             ch.pipeline()
                                     .addLast(new StringDecoder())
                                     .addLast(new StringEncoder())
+                                    .addLast(new InHandler1())
+                                    .addLast(new InHandler2())
+                                    .addFirst(new InHandler3())
                                     .addLast(new RpcNettyServerHandler());
                         }
                     });

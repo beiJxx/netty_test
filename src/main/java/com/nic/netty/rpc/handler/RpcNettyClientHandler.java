@@ -21,6 +21,17 @@ public class RpcNettyClientHandler extends ChannelInboundHandlerAdapter implemen
     private String param;
 
     @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("handlerAdded...");
+        context = ctx;
+    }
+
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("channelRegistered...");
+    }
+
+    @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channelActive...");
         context = ctx;
